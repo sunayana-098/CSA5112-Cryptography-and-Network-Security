@@ -1,0 +1,37 @@
+#include <stdio.h>
+#include <ctype.h>
+int main() {
+    char text[100], key[27];
+    int i, j;
+    printf("Enter 26-letter key: ");
+    scanf("%26s", key);
+    printf("Enter plaintext: ");
+    scanf(" %[^\n]", text);
+    for (i = 0; text[i]; i++) {
+        if (isalpha(text[i])) {
+            if (isupper(text[i]))
+                text[i] = toupper(key[text[i] - 'A']);
+            else
+                text[i] = tolower(key[text[i] - 'a']);
+        }
+    }
+    printf("Encrypted text: %s\n", text);
+    printf("Enter ciphertext: ");
+    scanf(" %[^\n]", text);
+    for (i = 0; text[i]; i++) {
+        if (isalpha(text[i])) {
+            char ch = toupper(text[i]);
+
+            for (j = 0; j < 26; j++)
+                if (toupper(key[j]) == ch)
+                    break;
+
+            if (isupper(text[i]))
+                text[i] = 'A' + j;
+            else
+                text[i] = 'a' + j;
+        }
+    }
+    printf("Decrypted text: %s\n", text);
+    return 0;
+}
