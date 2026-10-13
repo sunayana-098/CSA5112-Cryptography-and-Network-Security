@@ -1,0 +1,54 @@
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int main() {
+    char key[100], sub[27], text[200];
+    int used[26] = {0}, i, n = 0, j;
+
+    printf("Enter keyword: ");
+    scanf("%99s", key);
+
+    for (i = 0; key[i]; i++) {
+        char ch = toupper((unsigned char)key[i]);
+        if (ch >= 'A' && ch <= 'Z' && !used[ch - 'A']) {
+            sub[n++] = ch;
+            used[ch - 'A'] = 1;
+        }
+    }
+
+    for (i = 0; i < 26; i++)
+        if (!used[i]) sub[n++] = 'A' + i;
+    sub[26] = '\0';
+
+    printf("Substitution alphabet: %s\n", sub);
+    printf("Enter plaintext: ");
+    scanf(" %199[^\n]", text);
+
+    for (i = 0; text[i]; i++) {
+        if (isalpha((unsigned char)text[i])) {
+            j = toupper((unsigned char)text[i]) - 'A';
+            text[i] = isupper((unsigned char)text[i])
+                    ? sub[j] : tolower(sub[j]);
+        }
+    }
+    printf("Encrypted: %s\n", text);
+
+    printf("Enter ciphertext: ");
+    scanf(" %199[^\n]", text);
+
+    for (i = 0; text[i]; i++) {
+        if (isalpha((unsigned char)text[i])) {
+            char ch = toupper((unsigned char)text[i]);
+            for (j = 0; j < 26; j++)
+                if (sub[j] == ch) break;
+            if (j < 26)
+                text[i] = isupper((unsigned char)text[i])
+                        ? 'A' + j : 'a' + j;
+        }
+    }
+    printf("Decrypted: %s\n", text);
+
+    return 0;
+}
