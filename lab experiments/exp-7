@@ -1,0 +1,26 @@
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int main() {
+    char text[500], key[27];
+    int i, j;
+
+    printf("Enter ciphertext: ");
+    scanf(" %499[^\n]", text);
+
+    printf("Enter 26-letter decryption key: ");
+    scanf("%26s", key);
+
+    for (i = 0; text[i]; i++) {
+        if (isalpha((unsigned char)text[i])) {
+            int upper = isupper((unsigned char)text[i]);
+            j = toupper((unsigned char)text[i]) - 'A';
+            text[i] = upper ? toupper(key[j]) : tolower(key[j]);
+        }
+    }
+
+    printf("Decrypted text: %s\n", text);
+    return 0;
+}
