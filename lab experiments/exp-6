@@ -1,0 +1,34 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int gcd(int a, int b) {
+    return b == 0 ? a : gcd(b, a % b);
+}
+
+int main() {
+    char c[500];
+    int a, b, i, x, inv;
+
+    printf("Enter ciphertext: ");
+    scanf(" %499[^\n]", c);
+
+    for (a = 1; a < 26; a++) {
+        if (gcd(a, 26) != 1) continue;
+
+        inv = 1;
+        while ((a * inv) % 26 != 1) inv++;
+
+        for (b = 0; b < 26; b++) {
+            printf("\na=%d b=%d: ", a, b);
+
+            for (i = 0; c[i]; i++) {
+                if (isalpha((unsigned char)c[i])) {
+                    x = toupper((unsigned char)c[i]) - 'A';
+                    putchar((inv * (x - b + 26)) % 26 + 'A');
+                } else putchar(c[i]);
+            }
+        }
+    }
+    return 0;
+}
