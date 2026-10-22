@@ -1,0 +1,40 @@
+
+#include <stdio.h>
+
+int main() {
+    int p1, p2, p3, p4, c1, c2, c3, c4;
+    int det, inv = -1, i;
+    int a, b, c, d;
+
+    printf("Enter plaintext blocks (two pairs, A=0): ");
+    scanf("%d%d%d%d", &p1, &p2, &p3, &p4);
+
+    printf("Enter ciphertext blocks (two pairs, A=0): ");
+    scanf("%d%d%d%d", &c1, &c2, &c3, &c4);
+
+    det = (p1*p4 - p2*p3) % 26;
+    if (det < 0) det += 26;
+
+    for (i = 0; i < 26; i++)
+        if ((det*i) % 26 == 1) inv = i;
+
+    if (inv == -1) {
+        printf("Cannot recover key: plaintext matrix is not invertible.\n");
+        return 0;
+    }
+
+    a = (inv*(c1*p4 - c3*p2)) % 26;
+    b = (inv*(c3*p1 - c1*p3)) % 26;
+    c = (inv*(c2*p4 - c4*p2)) % 26;
+    d = (inv*(c4*p1 - c2*p3)) % 26;
+
+    if(a<0)a+=26;
+    if(b<0)b+=26;
+    if(c<0)c+=26;
+    if(d<0)d+=26;
+
+    printf("Recovered key:\n");
+    printf("%d %d\n%d %d\n", a,b,c,d);
+
+    return 0;
+}
