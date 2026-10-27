@@ -1,0 +1,17 @@
+#include <stdio.h>
+#include <stdint.h>
+
+int main() {
+    uint64_t K[16];
+
+    printf("Enter 16 DES round keys in hexadecimal:\n");
+    for (int i = 0; i < 16; i++)
+        scanf("%llx", (unsigned long long *)&K[i]);
+
+    printf("\nDecryption round keys:\n");
+    for (int i = 15; i >= 0; i--)
+        printf("K%d = %012llX\n", 16-i,
+               (unsigned long long)K[i]);
+
+    return 0;
+}
