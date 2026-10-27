@@ -1,0 +1,19 @@
+
+#include <stdio.h>
+
+int main(void) {
+    printf("ECB MODE\n");
+    printf("Error in C1: P1 corrupted\n");
+    printf("P2 and later blocks: unaffected\n");
+
+    printf("\nCBC MODE: Error in transmitted C1\n");
+    printf("P1: corrupted\n");
+    printf("P2: corresponding bit flipped\n");
+    printf("P3 onward: unaffected\n");
+
+    printf("\nCBC MODE: Error in source plaintext P1\n");
+    printf("C1 onward: ciphertext blocks change\n");
+    printf("Receiver: P1 corrupted; later blocks may also be corrupted\n");
+
+    return 0;
+}
