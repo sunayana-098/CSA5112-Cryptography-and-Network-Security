@@ -1,1 +1,44 @@
 
+#include <stdio.h>
+#include <string.h>
+
+long long power(long long a,int b,int n){
+    long long r=1;
+    while(b>0){
+        r=(r*a)%n;
+        a=(a*a)%n;
+        b/=2;
+    }
+    return r;
+}
+
+int main(){
+    char msg[100];
+    int e=17,d=2753,n=3233;
+    long long c[100];
+    int len;
+
+    printf("Enter plaintext: ");
+    scanf("%99s",msg);
+
+    len=strlen(msg);
+
+    printf("Encrypted values: ");
+
+    for(int i=0;i<len;i++){
+        int m=msg[i]-'A';
+        c[i]=power(m,e,n);
+        printf("%lld ",c[i]);
+    }
+
+    printf("\nDecrypted message: ");
+
+    for(int i=0;i<len;i++){
+        int m=power(c[i],d,n);
+        printf("%c",(char)(m+'A'));
+    }
+
+    printf("\n");
+    return 0;
+}
+
