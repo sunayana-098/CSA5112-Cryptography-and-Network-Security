@@ -1,0 +1,49 @@
+
+#include <stdio.h>
+
+int gcd(int a,int b){
+    while(b!=0){
+        int t=b;
+        b=a%b;
+        a=t;
+    }
+    return a;
+}
+
+int main(){
+    int n,e,c,g,p,q,phi,d;
+
+    printf("Enter modulus n: ");
+    scanf("%d",&n);
+
+    printf("Enter public key e: ");
+    scanf("%d",&e);
+
+    printf("Enter ciphertext c: ");
+    scanf("%d",&c);
+
+    g=gcd(c,n);
+
+    printf("GCD(c,n) = %d\n",g);
+
+    if(g>1 && g<n){
+        p=g;
+        q=n/g;
+        phi=(p-1)*(q-1);
+
+        for(d=1;d<phi;d++){
+            if((e*d)%phi==1)
+                break;
+        }
+
+        printf("Factor p = %d\n",p);
+        printf("Factor q = %d\n",q);
+        printf("Phi(n) = %d\n",phi);
+        printf("Private Key d = %d\n",d);
+    }
+    else{
+        printf("No non-trivial factor found.\n");
+    }
+
+    return 0;
+}
