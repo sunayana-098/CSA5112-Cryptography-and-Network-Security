@@ -1,0 +1,40 @@
+
+#include <stdio.h>
+
+long long power(long long a,long long b,long long q){
+    long long r=1;
+    while(b>0){
+        r=(r*a)%q;
+        a=(a*a)%q;
+        b/=2;
+    }
+    return r;
+}
+
+int main(){
+    int q=23,a=5;
+    int xa=6,xb=15;
+
+    int A=power(a,xa,q);
+    int B=power(a,xb,q);
+
+    int keyA=power(B,xa,q);
+    int keyB=power(A,xb,q);
+
+    printf("Public Prime q = %d\n",q);
+    printf("Public Base a = %d\n",a);
+
+    printf("\nAlice Private Key = %d\n",xa);
+    printf("Bob Private Key = %d\n",xb);
+
+    printf("\nAlice Public Key = %d\n",A);
+    printf("Bob Public Key = %d\n",B);
+
+    printf("\nAlice Shared Key = %d\n",keyA);
+    printf("Bob Shared Key = %d\n",keyB);
+
+    if(keyA==keyB)
+        printf("\nShared Secret Established Successfully");
+
+    return 0;
+}
