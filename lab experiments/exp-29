@@ -1,0 +1,39 @@
+
+#include <stdio.h>
+
+int main(){
+    int state=1600;
+    int rate=1024;
+    int capacity=state-rate;
+    int lane=64;
+
+    int total=state/lane;
+    int rateLanes=rate/lane;
+    int capacityLanes=capacity/lane;
+
+    int lanes[25]={0};
+
+    // First 16 lanes contain nonzero message data
+    for(int i=0;i<rateLanes;i++)
+        lanes[i]=1;
+
+    printf("SHA-3 State Size: %d bits\n",state);
+    printf("Block Size: %d bits\n",rate);
+    printf("Capacity: %d bits\n",capacity);
+
+    printf("Total Lanes: %d\n",total);
+    printf("Rate Lanes: %d\n",rateLanes);
+    printf("Capacity Lanes: %d\n",capacityLanes);
+
+    printf("\nCapacity Lane Status:\n");
+
+    for(int i=rateLanes;i<total;i++){
+        printf("Lane %d = %d\n",i+1,lanes[i]);
+    }
+
+    printf("\nPermutation is ignored.\n");
+    printf("Capacity lanes remain zero.\n");
+    printf("Time required: Never (infinite).\n");
+
+    return 0;
+}
