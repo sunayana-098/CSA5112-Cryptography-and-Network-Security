@@ -1,0 +1,95 @@
+
+#include <stdio.h>
+
+int P10[]={3,5,2,7,4,10,1,9,8,6};
+int P8[]={6,3,7,4,8,5,10,9};
+int IP[]={2,6,3,1,4,8,5,7};
+int IPI[]={4,1,3,5,7,2,8,6};
+int EP[]={4,1,2,3,2,3,4,1};
+int P4[]={2,4,3,1};
+
+int S0[4][4]={
+{1,0,3,2},{3,2,1,0},
+{0,2,1,3},{3,1,3,2}
+};
+int S1[4][4]={
+{0,1,2,3},{2,0,1,3},
+{3,0,1,0},{2,1,0,3}
+};
+
+int perm(int x,int *p,int n,int b){
+    int r=0;
+    for(int i=0;i<n;i++)
+        r=(r<<1)|((x>>(b-p[i]))&1);
+    return r;
+}
+
+int rot(int x,int n){
+    return ((x<<n)|(x>>(5-n)))&31;
+}
+
+void keygen(int k,int *a,int *b){
+    int x=perm(k,P10,10,10);
+    int l=x>>5,r=x&31;
+    l=rot(l,1); r=rot(r,1);
+    *a=perm((l<<5)|r,P8,8,10);
+    l=rot(l,2); r=rot(r,2);
+    *b=perm((l<<5)|r,P8,8,10);
+}
+
+int sb(int x,int s[4][4]){
+    int row=((x&8)>>2)|(x&1);
+    return s[row][(x>>1)&3];
+}
+
+int fk(int x,int k){
+    int l=x>>4,r=x&15;
+    int t=perm(r,EP,8,4)^k;
+    int y=(sb(t>>4,S0)<<2)|sb(t&15,S1);
+    return ((l^perm(y,P4,4,4))<<4)|r;
+}
+
+int sd(int x,int k){
+    int a,b;
+    keygen(k,&a,&b);
+    x=perm(x,IP,8,8);
+    x=fk(x,a);
+    x=((x&15)<<4)|(x>>4);
+    x=fk(x,b);
+    return perm(x,IPI,8,8);
+}
+
+int main(){
+    int p[]={1,2,4};
+    int c[3],d[3];
+    int key=509,counter=0;
+
+    printf("Plaintext: 00000001 00000010 00000100\n");
+    printf("Key: 0111111101\n");
+    printf("Initial Counter: 00000000\n");
+
+    for(int i=0;i<3;i++){
+        c[i]=p[i]^sd(counter,key);
+        counter++;
+    }
+
+    printf("Encrypted: ");
+    for(int i=0;i<3;i++)
+        for(int j=7;j>=0;j--)
+            printf("%d",(c[i]>>j)&1);
+
+    counter=0;
+
+    for(int i=0;i<3;i++){
+        d[i]=c[i]^sd(counter,key);
+        counter++;
+    }
+
+    printf("\nDecrypted: ");
+    for(int i=0;i<3;i++)
+        for(int j=7;j>=0;j--)
+            printf("%d",(d[i]>>j)&1);
+
+    printf("\n");
+    return 0;
+}
