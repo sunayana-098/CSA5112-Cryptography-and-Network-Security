@@ -1,0 +1,63 @@
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int main(void) {
+    char text[1000];
+    char english[] = "ETAOINSHRDLCUMWFGYPBVKJXQZ";
+    int freq[26] = {0};
+    int index[26];
+
+    printf("Enter ciphertext: ");
+    fgets(text, sizeof(text), stdin);
+
+    /* Count letter frequencies */
+    for (int i = 0; text[i] != '\0'; i++) {
+        if (isalpha((unsigned char)text[i])) {
+            freq[toupper((unsigned char)text[i]) - 'A']++;
+        }
+    }
+
+    /* Initialize alphabet indexes */
+    for (int i = 0; i < 26; i++)
+        index[i] = i;
+
+    /* Sort by frequency */
+    for (int i = 0; i < 25; i++) {
+        for (int j = i + 1; j < 26; j++) {
+            if (freq[index[j]] > freq[index[i]]) {
+                int temp = index[i];
+                index[i] = index[j];
+                index[j] = temp;
+            }
+        }
+    }
+
+    printf("\nTop 10 possible plaintexts:\n");
+
+    /* Generate 10 candidate mappings */
+    for (int k = 0; k < 10; k++) {
+        char map[26];
+
+        for (int i = 0; i < 26; i++)
+            map[index[i]] = english[(i + k) % 26];
+
+        printf("\nCandidate %d: ", k + 1);
+
+        for (int i = 0; text[i] != '\0'; i++) {
+            if (isalpha((unsigned char)text[i])) {
+                char c = map[toupper((unsigned char)text[i]) - 'A'];
+
+                if (islower((unsigned char)text[i]))
+                    c = tolower((unsigned char)c);
+
+                putchar(c);
+            } else {
+                putchar(text[i]);
+            }
+        }
+    }
+
+    return 0;
+}
