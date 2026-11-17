@@ -1,0 +1,48 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdlib.h>
+
+int main(void) {
+    char text[1000], order[] = "ETAOINSHRDLCUMWFGYPBVKJXQZ";
+    int f[26] = {0}, idx[26], i, j, t;
+
+    printf("Enter ciphertext: ");
+    fgets(text, sizeof(text), stdin);
+
+    for (i = 0; text[i]; i++)
+        if (isalpha((unsigned char)text[i]))
+            f[toupper((unsigned char)text[i]) - 'A']++;
+
+    for (i = 0; i < 26; i++) idx[i] = i;
+
+    for (i = 0; i < 25; i++)
+        for (j = i + 1; j < 26; j++)
+            if (f[idx[j]] > f[idx[i]]) {
+                t = idx[i];
+                idx[i] = idx[j];
+                idx[j] = t;
+            }
+
+    printf("\nTop 10 possible plaintexts:\n");
+
+    for (int k = 0; k < 10; k++) {
+        char map[26];
+
+        for (i = 0; i < 26; i++)
+            map[idx[i]] = order[(i + k) % 26];
+
+        printf("\nCandidate %d: ", k + 1);
+
+        for (i = 0; text[i]; i++) {
+            if (isalpha((unsigned char)text[i])) {
+                char c = map[toupper((unsigned char)text[i]) - 'A'];
+                putchar(islower((unsigned char)text[i]) ? tolower(c) : c);
+            } else {
+                putchar(text[i]);
+            }
+        }
+    }
+
+    return 0;
+}
