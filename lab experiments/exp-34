@@ -1,0 +1,46 @@
+#include <stdio.h>
+#include <string.h>
+
+#define BS 4
+
+void show(char *name, unsigned char *a, int n) {
+    printf("%s: ", name);
+    for (int i = 0; i < n; i++)
+        printf("%02X ", a[i]);
+    printf("\n");
+}
+
+int main(void) {
+    unsigned char p[128], ecb[128], cbc[128], cfb[128];
+    unsigned char key[BS] = {1, 2, 3, 4};
+    unsigned char iv[BS] = {5, 6, 7, 8};
+    unsigned char prev[BS];
+    int len, padded;
+
+    printf("Enter plaintext: ");
+    fgets((char *)p, sizeof(p), stdin);
+    len = strlen((char *)p);
+    if (len && p[len - 1] == '\n') len--;
+
+    padded = (len / BS + 1) * BS;
+    p[len] = 0x80;
+    for (int i = len + 1; i < padded; i++) p[i] = 0;
+
+    memcpy(prev, iv, BS);
+
+    for (int i = 0; i < padded; i += BS) {
+        for (int j = 0; j < BS; j++) {
+            ecb[i+j] = p[i+j] ^ key[j];
+            cbc[i+j] = p[i+j] ^ prev[j] ^ key[j];
+            cfb[i+j] = p[i+j] ^ prev[j] ^ key[j];
+        }
+        memcpy(prev, cbc + i, BS);
+    }
+
+    show("ECB", ecb, padded);
+    show("CBC", cbc, padded);
+    show("CFB", cfb, padded);
+
+    printf("Padding: 80 followed by zero bytes\n");
+    return 0;
+}
