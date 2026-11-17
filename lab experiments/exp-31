@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <string.h>
+
+void generate(unsigned char *x, int n, unsigned char rb) {
+    int i, carry = 0, msb = x[0] >> 7;
+
+    for (i = n - 1; i >= 0; i--) {
+        int next = x[i] >> 7;
+        x[i] = (x[i] << 1) | carry;
+        carry = next;
+    }
+
+    if (msb)
+        x[n - 1] ^= rb;
+}
+
+void print(unsigned char *x, int n) {
+    for (int i = 0; i < n; i++)
+        printf("%02X", x[i]);
+    printf("\n");
+}
+
+int main(void) {
+    int bits, n;
+    unsigned char L[16] = {0};
+    unsigned char K1[16], K2[16];
+
+    printf("Enter block size (64 or 128): ");
+    scanf("%d", &bits);
+
+    if (bits != 64 && bits != 128) {
+        printf("Invalid block size\n");
+        return 1;
+    }
+
+    n = bits / 8;
+
+    printf("Enter encrypted zero block in hexadecimal (%d bytes): ", n);
+    for (int i = 0; i < n; i++) {
+        unsigned int v;
+        if (scanf("%2x", &v) != 1 || v > 255) {
+            printf("Invalid hexadecimal input\n");
+            return 1;
+        }
+        L[i] = (unsigned char)v;
+    }
+
+    memcpy(K1, L, n);
+    generate(K1, n, bits == 64 ? 0x1B : 0x87);
+
+    memcpy(K2, K1, n);
+    generate(K2, n, bits == 64 ? 0x1B : 0x87);
+
+    printf("K1: ");
+    print(K1, n);
+    printf("K2: ");
+    print(K2, n);
+
+    return 0;
+}
