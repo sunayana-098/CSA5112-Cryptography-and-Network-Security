@@ -1,0 +1,77 @@
+
+#include <stdio.h>
+
+long long gcd(long long a, long long b) {
+    while (b) {
+        long long t = b;
+        b = a % b;
+        a = t;
+    }
+    return a;
+}
+
+long long power(long long a, long long b, long long n) {
+    long long result = 1;
+    a %= n;
+
+    while (b > 0) {
+        if (b % 2)
+            result = (result * a) % n;
+
+        a = (a * a) % n;
+        b /= 2;
+    }
+    return result;
+}
+
+long long inverse(long long e, long long phi) {
+    for (long long d = 1; d < phi; d++)
+        if ((e * d) % phi == 1)
+            return d;
+
+    return -1;
+}
+
+int main(void) {
+    long long p = 11, q = 13;
+    long long n = p * q;
+    long long phi = (p - 1) * (q - 1);
+
+    long long e = 7;
+    long long d = inverse(e, phi);
+
+    long long message, cipher, decrypted;
+
+    printf("RSA PUBLIC KEY LEAK DEMONSTRATION\n");
+    printf("Modulus n = %lld\n", n);
+    printf("Public key e = %lld\n", e);
+    printf("Private key d = %lld\n", d);
+
+    printf("\nEnter message (less than %lld): ", n);
+    scanf("%lld", &message);
+
+    if (message < 0 || message >= n) {
+        printf("Invalid message\n");
+        return 1;
+    }
+
+    cipher = power(message, e, n);
+    decrypted = power(cipher, d, n);
+
+    printf("Encrypted message = %lld\n", cipher);
+    printf("Decrypted message = %lld\n", decrypted);
+
+    /* Generate a new key pair using the same modulus */
+    long long new_e = 17;
+    long long new_d = inverse(new_e, phi);
+
+    printf("\nNew public key = %lld\n", new_e);
+    printf("New private key = %lld\n", new_d);
+
+    printf("\nOld modulus = %lld\n", n);
+    printf("New modulus = %lld\n", n);
+
+    printf("\nIs reusing the modulus safe? NO\n");
+
+    return 0;
+}
