@@ -1,0 +1,44 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+int power(int a, int b, int m) {
+    int r = 1;
+    while (b--) r = (r * a) % m;
+    return r;
+}
+
+int inverse(int a, int m) {
+    for (int i = 1; i < m; i++)
+        if ((a * i) % m == 1) return i;
+    return -1;
+}
+
+int main(void) {
+    int p = 23, q = 11, g = 2;
+    int x = 3, h = 9, y;
+    int k, r, s, rsa1, rsa2;
+
+    y = power(g, x, p);
+    srand((unsigned)time(NULL));
+
+    printf("Message hash: %d\n", h);
+    printf("DSA public key y: %d\n", y);
+
+    for (int i = 1; i <= 2; i++) {
+        k = 1 + rand() % 10;
+        r = power(g, k, p) % q;
+        s = (inverse(k, q) * (h + x * r)) % q;
+        printf("DSA Signature %d: (%d, %d), k=%d\n",
+               i, r, s, k);
+    }
+
+    /* Small deterministic RSA demonstration */
+    rsa1 = power(h, 103, 143);
+    rsa2 = power(h, 103, 143);
+
+    printf("RSA Signature 1: %d\n", rsa1);
+    printf("RSA Signature 2: %d\n", rsa2);
+
+    return 0;
+}
